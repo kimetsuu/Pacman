@@ -43,13 +43,14 @@ class Maze:
         # Check for collision with normal dots
         score_increment = 0
         if self.maze_layout[pacman_y][pacman_x] in [0, 2]:
-            self.maze_layout[pacman_y][pacman_x] = -1
-            self.total_dots -= 1
             if self.maze_layout[pacman_y][pacman_x] == 0:
                 score_increment = 10
             elif self.maze_layout[pacman_y][pacman_x] == 2:
                 score_increment = 50
                 pacman.eat_big_dot()
+            self.maze_layout[pacman_y][pacman_x] = -1
+            self.total_dots -= 1
+
         return score_increment
 
     def draw(self):
