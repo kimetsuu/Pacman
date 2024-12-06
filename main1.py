@@ -43,7 +43,7 @@ class App:
             big_dot_color = pyxel.COLOR_RED,
             wall_color = pyxel.COLOR_DARK_BLUE,
         )
-        self.pacman = Pacman(x=16, y=16, speed=2, color=pyxel.COLOR_YELLOW)
+        self.pacman = Pacman(x = 16, y = 16, speed = 2, color = pyxel.COLOR_YELLOW)
         self.score = 0
         
         print(f"Pacman initialized at ({self.pacman.x}, {self.pacman.y})")

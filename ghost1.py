@@ -2,7 +2,7 @@ import random
 import pyxel
 
 class Ghost:
-    def __init__(self, x, y, color, speed = 4):
+    def __init__(self, x, y, color, speed = 1):
         self.x = x
         self.y = y
         self.color = color
