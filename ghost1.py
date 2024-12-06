@@ -10,20 +10,27 @@ class Ghost:
         self.alive = True  # True if ghost is alive, False if eaten
         self.blinking = False  # True when ghost is vulnerable to being eaten
     
-    def move(self, maze_layout):
-        directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]  # up, down, left, right
+    def move(self, maze_layout, pacman_x, pacman_y):
+        directions = [(0, -1), (0, 1), (-1, 0), (1, 0)] # up, down, left, right respectively
         random.shuffle(directions)
-
+        
+        '''I will use Manhattan distances to calculate the shortest path to pacman'''
+        distances = []
         for dx, dy in directions:
+            new_x = self.x + dx * 8
+            new_y = self.y + dy * 8
+            distance = abs(new_x - pacman_x) + abs(new_y - pacman_y)
+            distances.append((distance, (dx, dy)))
+            
+        distances.sort() # sort the distances, so the shortest path to pacman comes first
+        for _, (dx, dy) in distances:
             new_x = self.x + dx * self.speed
             new_y = self.y + dy * self.speed
-
-            # ensure the ghost doesnt move into walls
-            if maze_layout[new_y // 8][new_x // 8] != 1:  # 1 is wall
+            if maze_layout[new_y // 8][new_x // 8] != 1: # ensure there is no wall
                 self.x = new_x
                 self.y = new_y
                 break
-
+        
     def become_vulnerable(self):
         self.blinking = True
 
