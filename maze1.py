@@ -1,11 +1,15 @@
 import pyxel
 import random
+from pacman1 import Pacman
+
 class Maze:
     def __init__(self, maze_layout, dot_color, big_dot_color, wall_color):
         self.maze_layout = maze_layout
         self.dot_color = dot_color
         self.big_dot_color = big_dot_color
         self.wall_color = wall_color
+
+        #self.pacman = Pacman(x = 200, y = 16, speed = 2, color = pyxel.COLOR_YELLOW)
 
         # Initialize maze properties
         self.width = len(maze_layout[0])
