@@ -1,6 +1,5 @@
 import pyxel
 import random
-
 class Maze:
     def __init__(self, maze_layout, dot_color, big_dot_color, wall_color):
         self.maze_layout = maze_layout
@@ -40,14 +39,13 @@ class Maze:
             self.maze_layout[y][x] = 2  # 2 represents a big dot
     
     def check_dot_collision(self, pacman_x, pacman_y, pacman):
-        # Check for collision with normal dots
+        # Check for collision with normal and power up dots
         score_increment = 0
         if self.maze_layout[pacman_y][pacman_x] in [0, 2]:
             if self.maze_layout[pacman_y][pacman_x] == 0:
                 score_increment = 10
             elif self.maze_layout[pacman_y][pacman_x] == 2:
                 score_increment = 50
-                pacman.eat_big_dot()
             self.maze_layout[pacman_y][pacman_x] = -1
             self.total_dots -= 1
 

@@ -8,7 +8,7 @@ class Pacman:
         self.speed = speed
         self.color = color
         self.power_up_active = False
-        self.power_up_timer = 0
+        self.power_up_timer = 300
         self.direction = None
 
     def handle_input(self):
@@ -48,7 +48,7 @@ class Pacman:
             
     def eat_big_dot(self):
         self.power_up_active = True
-        self.power_up_timer = 300
+        self.power_up_timer = 300 # 5 second power up
 
     def draw(self):
         pyxel.circ(self.x, self.y, 4, self.color)
