@@ -7,6 +7,7 @@ class App:
     def __init__(self):
         pyxel.init(240, 128)
 
+        self.lives = 3
         self.game_paused = False
         self.ghosts = [
             Ghost(32, 32, pyxel.COLOR_RED),
@@ -67,6 +68,7 @@ class App:
         self.pacman.handle_input()
         self.pacman.move(self.maze.maze_layout)
         
+        # handle pacman power up
         if self.maze.maze_layout[self.pacman.y // 8][self.pacman.x // 8] == 2:
             self.pacman.eat_big_dot()
             for ghost in self.ghosts:
@@ -90,7 +92,7 @@ class App:
                     ghost.get_eaten()
                     self.score += 200   # add points for eating a ghost
                 else:
-                    self.game_paused = True
+                    self.reset_pacman_position()
                     break
         
         # Collision detection with dots
@@ -111,6 +113,13 @@ class App:
             else:
                 pyxel.quit()
                 
+    def reset_pacman_position(self):
+        self.lives -= 1
+        if self.lives > 0:
+            self.pacman.x, self.pacman.y = 200, 16 # reset to original position
+        else:
+            self.game_paused = True
+    
     def restart_game(self):
         self.current_maze_index = 0
         self.maze = Maze(
@@ -150,6 +159,8 @@ class App:
             pyxel.text(50, 60, 'GAME OVER', pyxel.COLOR_RED)
             pyxel.text(35, 80, "PRESS 'R' TO RESTART OR 'Q' TO QUIT", pyxel.COLOR_WHITE)
             pyxel.text(20, 100, f'YOUR SCORE: {self.score}', pyxel.COLOR_WHITE)
+            
+        pyxel.text(5, 15, f"Lives: {self.lives}", pyxel.COLOR_WHITE)
 
 
 App()
