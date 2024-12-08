@@ -8,8 +8,9 @@ class Pacman:
         self.speed = speed
         self.color = color
         self.power_up_active = False
-        self.power_up_timer = 300
+        self.power_up_timer = 0
         self.direction = None
+        self.power_up_limit = 5
 
     def handle_input(self):
         if pyxel.btnp(pyxel.KEY_UP):
@@ -22,12 +23,6 @@ class Pacman:
             self.direction = 'RIGHT'
 
     def move(self, maze_layout):
-        if self.power_up_active:
-            self.power_up_timer -= 1  # decrease power up time
-
-        if self.power_up_timer <= 0:  # power up ends when timer reaches zero
-            self.power_up_active = False
-        
         new_x, new_y = self.x, self.y
 
         if self.direction == 'UP':
@@ -47,8 +42,8 @@ class Pacman:
             self.x, self.y = new_x, new_y
             
     def eat_big_dot(self):
+        self.power_up_timer = time.time()
         self.power_up_active = True
-        self.power_up_timer = 300 # 5 second power up
 
     def draw(self):
         pyxel.circ(self.x, self.y, 4, self.color)
