@@ -1,6 +1,7 @@
 import random
 import pyxel
 import time
+from pacman1 import Pacman
 
 class Ghost:
     def __init__(self, x, y, color, speed = 1):
@@ -16,27 +17,27 @@ class Ghost:
         self.stuck_timer = None
         self.last_position = None
     
-    def move(self, maze_layout, pacman_x, pacman_y):
-        current_position = (self.x, self.y) # track current position
+    def move(self, maze_layout, pacman_x, pacman_y, power_up):
+        # current_position = (self.x, self.y) # track current position
         
-        # check if ghost is stuck
-        if current_position == self.last_position:
-            if self.stuck_timer is None:
-                self.stuck_timer = time.time()
-            elif time.time() - self.stuck_timer > 1: # if ghost is stuck for 1 second
-                self.stuck_timer = None
-                random_move = random.choice([(0, -1), (0, 1), (-1, 0), (1, 0)])
-                new_x = self.x + random_move[0] * self.speed
-                new_y = self.y + random_move[1] * self.speed
-                if maze_layout[new_y // 8][new_x // 8] != 1: # check if new move is not to the wall
-                    self.x = new_x
-                    self.y = new_y
-                return
-        else:
-            self.stuck_timer = None
+        # # check if ghost is stuck
+        # if current_position == self.last_position:
+        #     if self.stuck_timer is None:
+        #         self.stuck_timer = time.time()
+        #     elif time.time() - self.stuck_timer > 1: # if ghost is stuck for 1 second
+        #         self.stuck_timer = None
+        #         random_move = random.choice([(0, -1), (0, 1), (-1, 0), (1, 0)])
+        #         new_x = self.x + random_move[0] * self.speed
+        #         new_y = self.y + random_move[1] * self.speed
+        #         if maze_layout[new_y // 8][new_x // 8] != 1: # check if new move is not to the wall
+        #             self.x = new_x
+        #             self.y = new_y
+        #         return
+        # else:
+        #     self.stuck_timer = None
         
         # save the current position
-        self.last_position = current_position
+        # self.last_position = current_position
                 
         valid_moves = []
         directions = [(0, -1), (0, 1), (-1, 0), (1, 0)] # up, down, left, right respectively
@@ -53,16 +54,24 @@ class Ghost:
             
         chosen_move = None
         min_dist = float('inf')
+        max_dist = 0
             
         for dx, dy in valid_moves:
             new_x = self.x + dx * self.speed
             new_y = self.y + dy * self.speed
             distance = abs(new_x - pacman_x) + abs(new_y - pacman_y)
             
-            if distance < min_dist:
-                min_dist = distance
-                chosen_move = (dx, dy)
+            if not power_up:
+                if distance < min_dist:
+                    min_dist = distance
+                    chosen_move = (dx, dy)
+            else:
+                if distance > max_dist:
+                    max_dist = distance
+                    chosen_move = (dx, dy)
                 
+            
+        
         if not chosen_move:
             return
             
