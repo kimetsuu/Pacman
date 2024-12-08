@@ -1,4 +1,5 @@
 import pyxel
+import time
 from pacman1 import Pacman
 from maze1 import Maze
 from ghost1 import Ghost
@@ -9,6 +10,7 @@ class App:
 
         self.lives = 3
         self.game_paused = False
+        self.game_finished = False
         self.ghosts = [
             Ghost(32, 32, pyxel.COLOR_RED),
             Ghost(64, 32, pyxel.COLOR_CYAN),
@@ -71,11 +73,13 @@ class App:
         # handle pacman power up
         if self.maze.maze_layout[self.pacman.y // 8][self.pacman.x // 8] == 2:
             self.pacman.eat_big_dot()
+            print('got power up')
             for ghost in self.ghosts:
                 ghost.become_vulnerable()
         
         # update pacman power-up time
-        if self.pacman.power_up_active and pyxel.frame_count >= self.pacman.power_up_timer:
+        current_time = time.time()
+        if self.pacman.power_up_active and self.pacman.power_up_timer + self.pacman.power_up_limit < current_time:
             self.pacman.power_up_active = False
             for ghost in self.ghosts:
                 ghost.reset_vulnerability()
@@ -84,7 +88,7 @@ class App:
         for ghost in self.ghosts:
             ghost.update()
             if ghost.alive:    
-                ghost.move(self.maze.maze_layout, self.pacman.x, self.pacman.y)
+                ghost.move(self.maze.maze_layout, self.pacman.x, self.pacman.y, self.pacman.power_up_active)
             
         for ghost in self.ghosts:
             if abs(ghost.x - self.pacman.x) < 8 and abs(ghost.y - self.pacman.y) < 8:
@@ -111,7 +115,13 @@ class App:
                 )
                 self.pacman.x, self.pacman.y = 16, 16
             else:
-                pyxel.quit()
+                # ask if user wants to restart the game or quit
+                self.game_finished = True
+                if pyxel.btnp(pyxel.KEY_R):
+                    self.restart_game()
+                elif pyxel.btnp(pyxel.KEY_Q):                        
+                    pyxel.quit()
+                return
                 
     def reset_pacman_position(self):
         self.lives -= 1
@@ -160,7 +170,13 @@ class App:
             pyxel.text(35, 80, "PRESS 'R' TO RESTART OR 'Q' TO QUIT", pyxel.COLOR_WHITE)
             pyxel.text(20, 100, f'YOUR SCORE: {self.score}', pyxel.COLOR_WHITE)
             
+        if self.game_finished:
+            pyxel.text(50, 60, "CONGRATULATIONS, YOU WON", pyxel.COLOR_RED)
+            pyxel.text(35, 80, "PRESS 'R' TO RESTART OR 'Q' TO QUIT", pyxel.COLOR_WHITE)
+            pyxel.text(20, 100, f'YOUR SCORE: {self.score}', pyxel.COLOR_WHITE)
+            
         pyxel.text(5, 15, f"Lives: {self.lives}", pyxel.COLOR_WHITE)
+        pyxel.text(5, 30, time.ctime(), pyxel.COLOR_WHITE)
 
 
 App()
