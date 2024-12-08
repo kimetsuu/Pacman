@@ -1,5 +1,6 @@
 import random
 import pyxel
+import time
 
 class Ghost:
     def __init__(self, x, y, color, speed = 1):
@@ -12,8 +13,31 @@ class Ghost:
         self.alive = True  # True if ghost is alive, False if eaten
         self.blinking = False  # True when ghost is vulnerable to being eaten
         self.respawn_time = 0
+        self.stuck_timer = None
+        self.last_position = None
     
     def move(self, maze_layout, pacman_x, pacman_y):
+        current_position = (self.x, self.y) # track current position
+        
+        # check if ghost is stuck
+        if current_position == self.last_position:
+            if self.stuck_timer is None:
+                self.stuck_timer = time.time()
+            elif time.time() - self.stuck_timer > 1: # if ghost is stuck for 1 second
+                self.stuck_timer = None
+                random_move = random.choice([(0, -1), (0, 1), (-1, 0), (1, 0)])
+                new_x = self.x + random_move[0] * self.speed
+                new_y = self.y + random_move[1] * self.speed
+                if maze_layout[new_y // 8][new_x // 8] != 1: # check if new move is not to the wall
+                    self.x = new_x
+                    self.y = new_y
+                return
+        else:
+            self.stuck_timer = None
+        
+        # save the current position
+        self.last_position = current_position
+                
         valid_moves = []
         directions = [(0, -1), (0, 1), (-1, 0), (1, 0)] # up, down, left, right respectively
         
@@ -39,8 +63,8 @@ class Ghost:
                 min_dist = distance
                 chosen_move = (dx, dy)
                 
-        if not chosen_move or random.random() < 0.3:  # 30% chance to choose random move
-            chosen_move = random.choice(valid_moves)
+        if not chosen_move:
+            return
             
         # move the ghost
         self.x += chosen_move[0] * self.speed
