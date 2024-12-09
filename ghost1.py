@@ -4,41 +4,73 @@ import time
 from pacman1 import Pacman
 
 class Ghost:
-    def __init__(self, x, y, color, speed = 1):
+    def __init__(self, x, y, img, u, v, w, h, colkey, speed = 1):
         self.start_x = x
         self.start_y = y
-        self.x = x
-        self.y = y
-        self.color = color
+        self.img = img # image bank (for sprite loading)
+        self.u = u # x coordinate of the sprite
+        self.v = v # y coordinate of the sprite
+        self.w = w # width of the sprite
+        self.h = h # height of the sprite
+        self.colkey = colkey # transparency
+        self.x = x # x coordinate
+        self.y = y # y coordinate
         self.speed = speed  # ghost movement speed
         self.alive = True  # True if ghost is alive, False if eaten
         self.blinking = False  # True when ghost is vulnerable to being eaten
         self.respawn_time = 0
-        self.stuck_timer = None
-        self.last_position = None
+        
+    '''property and setter for x coordinate'''
+    @property
+    def x(self):
+        return self._x
+    
+    @x.setter
+    def x(self, value):
+        if isinstance(value, int) or isinstance(value, float):
+            self._x = value
+    
+    '''property and setter for y coordinate'''
+    @property
+    def y(self):
+        return self._y
+    
+    @y.setter
+    def y(self, value):
+        if isinstance(value, int) or isinstance(value, float):
+            self._y = value
+
+    '''propery and setter for speed'''
+    @property
+    def speed(self):
+        return self._speed
+    
+    @speed.setter
+    def speed(self, value):
+        if isinstance(value, int) or isinstance(value, float):
+            self._speed = value
+
+    '''propery and setter for alive'''
+    @property
+    def alive(self):
+        return self._alive
+    
+    @alive.setter
+    def alive(self, value):
+        if isinstance(value, bool):
+            self._alive = value
+    
+    '''propery and setter for blinking'''
+    @property
+    def blinking(self):
+        return self._blinking
+    
+    @blinking.setter
+    def blinking(self, value):
+        if isinstance(value, bool):
+            self._blinking = value
     
     def move(self, maze_layout, pacman_x, pacman_y, power_up):
-        # current_position = (self.x, self.y) # track current position
-        
-        # # check if ghost is stuck
-        # if current_position == self.last_position:
-        #     if self.stuck_timer is None:
-        #         self.stuck_timer = time.time()
-        #     elif time.time() - self.stuck_timer > 1: # if ghost is stuck for 1 second
-        #         self.stuck_timer = None
-        #         random_move = random.choice([(0, -1), (0, 1), (-1, 0), (1, 0)])
-        #         new_x = self.x + random_move[0] * self.speed
-        #         new_y = self.y + random_move[1] * self.speed
-        #         if maze_layout[new_y // 8][new_x // 8] != 1: # check if new move is not to the wall
-        #             self.x = new_x
-        #             self.y = new_y
-        #         return
-        # else:
-        #     self.stuck_timer = None
-        
-        # save the current position
-        # self.last_position = current_position
-                
         valid_moves = []
         directions = [(0, -1), (0, 1), (-1, 0), (1, 0)] # up, down, left, right respectively
         
@@ -53,25 +85,23 @@ class Ghost:
             return # no possible moves, dont move
             
         chosen_move = None
-        min_dist = float('inf')
-        max_dist = 0
+        min_dist = float('inf') # set to infinity to find min distance
+        max_dist = 0 # set to 0 to find max distance 
             
         for dx, dy in valid_moves:
             new_x = self.x + dx * self.speed
             new_y = self.y + dy * self.speed
-            distance = abs(new_x - pacman_x) + abs(new_y - pacman_y)
+            distance = abs(new_x - pacman_x) + abs(new_y - pacman_y) # calculate distance
             
-            if not power_up:
+            if not power_up: # ghosts are moving towards the pacman
                 if distance < min_dist:
                     min_dist = distance
                     chosen_move = (dx, dy)
-            else:
+            else: # ghosts are running away from pacman
                 if distance > max_dist:
                     max_dist = distance
                     chosen_move = (dx, dy)
                 
-            
-        
         if not chosen_move:
             return
             
@@ -90,6 +120,7 @@ class Ghost:
         self.respawn_time += pyxel.frame_count + 180 # 3 seconds to resplawn
         self.x, self.y = -100, -100 # move of screen for that time
     
+    # respawn ghost
     def update(self):
         if not self.alive and pyxel.frame_count >= self.respawn_time:
             self.reset_position()
@@ -103,7 +134,7 @@ class Ghost:
         if self.alive:
             if self.blinking:
                 # alternate between white and the ghosts original color
-                pyxel.circ(self.x, self.y, 4, pyxel.COLOR_WHITE if pyxel.frame_count % 10 < 5 else self.color)
+                pyxel.blt(self.x, self.y, self.img, 20, 36, 8, 8, self.colkey)
             else:
                 # draw the ghost normally
-                pyxel.circ(self.x, self.y, 4, self.color)
+                pyxel.blt(self.x, self.y, self.img, self.u, self.v, self.w, self.h, self.colkey)
