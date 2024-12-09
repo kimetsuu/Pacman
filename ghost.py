@@ -1,7 +1,4 @@
-import random
 import pyxel
-import time
-from pacman import Pacman
 
 class Ghost:
     def __init__(self, x, y, img, u, v, w, h, colkey, speed = 1):

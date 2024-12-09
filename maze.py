@@ -1,6 +1,5 @@
 import pyxel
 import random
-from pacman import Pacman
 
 class Maze:
     def __init__(self, maze_layout, dot_color, big_dot_color, wall_color):
