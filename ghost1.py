@@ -29,6 +29,8 @@ class Ghost:
     def x(self, value):
         if isinstance(value, int) or isinstance(value, float):
             self._x = value
+        else:
+            raise ValueError('Incorrent type')
     
     '''property and setter for y coordinate'''
     @property
@@ -39,6 +41,8 @@ class Ghost:
     def y(self, value):
         if isinstance(value, int) or isinstance(value, float):
             self._y = value
+        else:
+            raise ValueError('Incorrent type')
 
     '''propery and setter for speed'''
     @property
@@ -49,6 +53,8 @@ class Ghost:
     def speed(self, value):
         if isinstance(value, int) or isinstance(value, float):
             self._speed = value
+        else:
+            raise ValueError('Incorrent type')
 
     '''propery and setter for alive'''
     @property
@@ -59,6 +65,8 @@ class Ghost:
     def alive(self, value):
         if isinstance(value, bool):
             self._alive = value
+        else:
+            raise ValueError('Incorrent type')
     
     '''propery and setter for blinking'''
     @property
@@ -69,6 +77,8 @@ class Ghost:
     def blinking(self, value):
         if isinstance(value, bool):
             self._blinking = value
+        else:
+            raise ValueError('Incorrent type')
     
     def move(self, maze_layout, pacman_x, pacman_y, power_up):
         valid_moves = []
