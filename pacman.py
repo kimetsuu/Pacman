@@ -118,4 +118,11 @@ class Pacman:
         self.power_up_active = True
 
     def draw(self):
-        pyxel.blt(self.x, self.y, 0, 4, 4, 8, 8, 0)
+        if self.direction == 'UP':
+            pyxel.blt(self.x, self.y, 0, 36, 36, 8, 8, 0)
+        elif self.direction == 'RIGHT':
+            pyxel.blt(self.x, self.y, 0, 4, 4, 8, 8, 0)
+        elif self.direction == 'LEFT':
+            pyxel.blt(self.x, self.y, 0, 36, 20, 8, 8, 0)
+        elif self.direction == 'DOWN':
+            pyxel.blt(self.x, self.y, 0, 36, 4, 8, 8, 0)
