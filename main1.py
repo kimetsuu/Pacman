@@ -12,13 +12,13 @@ class App:
         self.game_paused = False
         self.game_finished = False
         self.ghosts = [
-            Ghost(32, 32, pyxel.COLOR_RED),
-            Ghost(64, 32, pyxel.COLOR_CYAN),
-            Ghost(32, 64, pyxel.COLOR_ORANGE),
-            Ghost(64, 64, pyxel.COLOR_PINK),
+            Ghost(32, 32, 0, 20, 4, 8, 8, 0, 1),
+            Ghost(64, 32, 0, 4, 20, 8, 8, 0, 1),
+            Ghost(32, 64, 0, 20, 20, 8, 8, 0, 1),
+            Ghost(64, 64, 0, 4, 36, 8, 8, 0, 1),
         ]
 
-        # Predefined maze layouts
+        # predefined maze layouts
         self.mazes = [
             [
                 [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -39,7 +39,7 @@ class App:
             ]
         ]
 
-        # Create the first maze
+        # create mazes
         self.current_maze_index = 0
         self.maze = Maze(
             maze_layout = self.mazes[self.current_maze_index],
@@ -47,7 +47,7 @@ class App:
             big_dot_color = pyxel.COLOR_LIGHT_BLUE,
             wall_color = pyxel.COLOR_DARK_BLUE,
         )
-        self.pacman = Pacman(x = 200, y = 16, speed = 2, color = pyxel.COLOR_YELLOW)
+        self.pacman = Pacman(x = 200, y = 16, speed = 2)
         self.score = 0
         
         print(f"Pacman initialized at ({self.pacman.x}, {self.pacman.y})")
@@ -73,7 +73,6 @@ class App:
         # handle pacman power up
         if self.maze.maze_layout[self.pacman.y // 8][self.pacman.x // 8] == 2:
             self.pacman.eat_big_dot()
-            print('got power up')
             for ghost in self.ghosts:
                 ghost.become_vulnerable()
         
@@ -99,11 +98,11 @@ class App:
                     self.reset_pacman_position()
                     break
         
-        # Collision detection with dots
+        # collision detection with dots
         score_increment = self.maze.check_dot_collision(self.pacman.x // 8, self.pacman.y // 8, self.pacman)
         self.score += score_increment
 
-        # Check if maze is complete
+        # check if maze is complete
         if self.maze.total_dots == 0:
             self.current_maze_index += 1
             if self.current_maze_index < len(self.mazes):
@@ -154,11 +153,11 @@ class App:
         self.maze.draw()
         self.pacman.draw()
         
-        # Draw ghosts
+        # draw ghosts
         for ghost in self.ghosts:
             ghost.draw()
 
-        # Draw the score
+        # draw the score
         pyxel.text(5, 5, f"Score: {self.score}", pyxel.COLOR_WHITE)
         
         if self.pacman.power_up_active:
@@ -176,7 +175,6 @@ class App:
             pyxel.text(20, 100, f'YOUR SCORE: {self.score}', pyxel.COLOR_WHITE)
             
         pyxel.text(5, 15, f"Lives: {self.lives}", pyxel.COLOR_WHITE)
-        pyxel.text(5, 30, time.ctime(), pyxel.COLOR_WHITE)
 
 
 App()
